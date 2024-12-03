@@ -1,0 +1,1 @@
+docker run -p 10099:10099  -e SQLITE_DB_FILE="./stardict.db" my-flask-app
