@@ -5,8 +5,10 @@ FROM python:3.9-slim
 WORKDIR /app
 
 # 复制当前目录的内容到工作目录
-COPY . /app
-#RUN rm -rf stardict.7z stardict.csv stardict.db
+COPY ./server.py /app
+COPY ./requirements.txt /app
+COPY ./stardict.py /app
+COPY ./init.py /app
 
 # 安装 Python 依赖
 RUN pip install --no-cache-dir -r requirements.txt
