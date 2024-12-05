@@ -90,8 +90,8 @@ class StarDict (object):
         self.__conn.executescript(sql)
         self.__conn.commit()
 
-        fields = ( 'id', 'word', 'sw', 'phonetic', 'definition', 
-            'translation', 'pos', 'collins', 'oxford', 'tag', 'bnc', 'frq', 
+        fields = ( 'id', 'word', 'sw', 'phonetic', 'definition',
+            'translation', 'pos', 'collins', 'oxford', 'tag', 'bnc', 'frq',
             'exchange', 'detail', 'audio' )
         self.__fields = tuple([(fields[i], i) for i in range(len(fields))])
         self.__names = { }
@@ -121,7 +121,7 @@ class StarDict (object):
         if self.__conn:
             self.__conn.close()
         self.__conn = None
-    
+
     def __del__ (self):
         self.close()
 
@@ -355,8 +355,8 @@ class DictMySQL (object):
         mysql_startup()
         if MySQLdb is None:
             raise ImportError('No module named MySQLdb')
-        fields = [ 'id', 'word', 'sw', 'phonetic', 'definition', 
-            'translation', 'pos', 'collins', 'oxford', 'tag', 'bnc', 'frq', 
+        fields = [ 'id', 'word', 'sw', 'phonetic', 'definition',
+            'translation', 'pos', 'collins', 'oxford', 'tag', 'bnc', 'frq',
             'exchange', 'detail', 'audio' ]
         self.__fields = tuple([(fields[i], i) for i in range(len(fields))])
         self.__names = { }
@@ -542,7 +542,7 @@ class DictMySQL (object):
     def register (self, word, items, commit = True):
         sql = 'INSERT INTO stardict(word, sw) VALUES(%s, %s);'
         try:
-            with self.__conn as c:
+            with self.__conn.cursor() as c:
                 c.execute(sql, (word, stripword(word)))
         except MySQLdb.Error as e:
             self.out(str(e))
@@ -557,7 +557,7 @@ class DictMySQL (object):
         else:
             sql = 'DELETE FROM stardict WHERE word=%s;'
         try:
-            with self.__conn as c:
+            with self.__conn.cursor() as c:
                 c.execute(sql, (key,))
         except MySQLdb.Error as e:
             self.out(str(e))
@@ -568,7 +568,7 @@ class DictMySQL (object):
     def delete_all (self, reset_id = False):
         sql1 = 'DELETE FROM stardict;'
         try:
-            with self.__conn as c:
+            with self.__conn.cursor() as c:
                 c.execute(sql1)
         except MySQLdb.Error as e:
             self.out(str(e))
@@ -590,7 +590,7 @@ class DictMySQL (object):
         if len(names) == 0:
             if commit:
                 try:
-                    self.__conn.commit()
+                    self.__conn.cursor().commit()
                 except MySQLdb.Error as e:
                     self.out(str(e))
                     return False
@@ -601,7 +601,7 @@ class DictMySQL (object):
         else:
             sql += ' WHERE id=%s;'
         try:
-            with self.__conn as c:
+            with self.__conn.cursor() as c:
                 c.execute(sql, tuple(values + [key]))
         except MySQLdb.Error as e:
             self.out(str(e))
@@ -612,7 +612,7 @@ class DictMySQL (object):
     def count (self):
         sql = 'SELECT count(*) FROM stardict;'
         try:
-            with self.__conn as c:
+            with self.__conn.cursor() as c:
                 c.execute(sql)
                 row = c.fetchone()
                 return row[0]
@@ -624,7 +624,7 @@ class DictMySQL (object):
     # 提交数据
     def commit (self):
         try:
-            self.__conn.commit()
+            self.__conn.cursor().commit()
         except MySQLdb.Error as e:
             self.out(str(e))
             return False

@@ -1,1 +1,1 @@
-docker run -p 10099:10099  -v ./stardict.db:/app/stardict.db my-flask-app
+docker run -p 10099:10099  -v ./stardict.db:/app/stardict.db /my-flask-app

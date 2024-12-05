@@ -19,9 +19,8 @@ def init_sqlite_from_7z(zip_file="stardict.7z", target_db_file="stardict.db"):
     print("extracted and converted, target db file name: ", target_db_file)
 
 
-def transform_sqlite_to_mysql(sqlite_file="stardict.db", mysql_address=""):
-    stardict.convert_dict(sqlite_file, "stardict.csv")
-
+def transform_sqlite_to_mysql(mysql_address, sqlite_file="stardict.db"):
+    stardict.convert_dict(mysql_address, sqlite_file)
 
 
 def get_stardict(db_file="stardict.db") -> stardict.StarDict:
@@ -32,5 +31,12 @@ if __name__ == "__main__":
     # init_sqlite_from_7z()
 
     # transform_sqlite_to_mysql()
+
+    # db info
+    db = {'host': '127.0.0.1', 'user': 'root', 'passwd': 'TODO', 'db': 'engai'}
+    # init mysql
+    stardict.DictMySQL(db, init=True)
+
+    transform_sqlite_to_mysql(db)
 
     pass
